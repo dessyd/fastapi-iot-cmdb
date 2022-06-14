@@ -142,6 +142,7 @@ cython_debug/
 
 # My own stuff
 tracking.txt
+.env
 
 # alembic
 # alembic.ini

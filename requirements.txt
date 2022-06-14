@@ -1,1 +1,5 @@
+fastapi
 pre-commit
+pydantic
+python-dotenv
+sqlalchemy
