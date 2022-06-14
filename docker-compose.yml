@@ -1,0 +1,29 @@
+# Use postgres/example user/password credentials
+version: '3.5'
+
+services:
+  db:
+    image: postgres:latest
+    restart: always
+    environment:
+      POSTGRES_DB : ${DATABASE_NAME:-fastapi}
+      POSTGRES_USER : ${DATABASE_USER:-postgres}
+      POSTGRES_PASSWORD : ${DATABASE_PASSWORD:-example}
+    ports:
+      - ${DATABASE_PORT}:5432
+    volumes:
+      - db_volume:/var/lib/postgresql
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
+
+  api:
+    build: .
+    ports:
+      - 8000:8000
+
+volumes:
+  db_volume:
