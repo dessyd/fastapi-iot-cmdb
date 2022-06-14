@@ -1,5 +1,11 @@
 fastapi
+passlib
 pre-commit
+psycopg2-binary
 pydantic
+pydantic[email]
 python-dotenv
+python-jose
+python-multipart
 sqlalchemy
+uvicorn

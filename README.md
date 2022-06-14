@@ -5,6 +5,8 @@
 ### Local Setup
 
 ```bash
+# Install Postgres
+brew install postgresql
 # Create virtual environment
 python3 -m venv venv
 # Activate it
