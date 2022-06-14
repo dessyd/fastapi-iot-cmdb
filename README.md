@@ -28,3 +28,40 @@ alembic upgrade head
 # Start Web server:
 uvicorn app.main:app --reload
 ```
+
+## Modules dependencies
+
+```mermaid
+flowchart LR
+
+ s(schemas)
+ c(config)
+ m(models)
+ d(database)
+ o(oauth2)
+ ra(routers/auth)
+ ru(routers/users)
+ u(utils)
+
+ d --> c
+ m --> d
+ o --> d
+ o --> m
+ o --> d
+ o --> c
+
+ main --> ra
+ main --> ru
+
+ ra --> d
+ ra --> m
+ ra --> o
+ ra --> s
+ ra --> u
+
+ ru --> m
+ ru --> s
+ ru --> u
+ ru --> d
+
+```
