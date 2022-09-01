@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from .routers import auth, users, status
-from .models import StatusOut
+from .models import StatusMessage
 
 # Needed if Alembic is not used to create / upgrade the structure
 # models.Base.metadata.create_all(bind=engine)
@@ -31,7 +31,7 @@ app.include_router(auth.router)
 app.include_router(status.router)
 
 
-@app.get("/")
+@app.get("/", response_model=StatusMessage)
 def root():
     return {"message": "Hello Root"}
 

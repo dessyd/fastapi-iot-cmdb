@@ -94,7 +94,9 @@ class Vote(BaseModel):
 # Status
 #
 
-class StatusOut(BaseModel):
-    status: str
+class StatusMessage(BaseModel):
     message: str
+
+class StatusOut(StatusMessage):
+    status: str
     version: conint(ge=0)
