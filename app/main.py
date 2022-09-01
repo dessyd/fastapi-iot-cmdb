@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from .routers import auth, users
+from .routers import auth, users, status
 from .models import StatusOut
 
 # Needed if Alembic is not used to create / upgrade the structure
@@ -28,16 +28,10 @@ app.add_middleware(
 
 app.include_router(users.router)
 app.include_router(auth.router)
+app.include_router(status.router)
 
 
 @app.get("/")
 def root():
     return {"message": "Hello Root"}
 
-@app.get("/status", response_model=StatusOut)
-def status():
-    return {
-        "status" : "OK", 
-        "message": "All Korrekt", 
-        "version": 1
-        }
