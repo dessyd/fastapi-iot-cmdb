@@ -32,6 +32,6 @@ app.include_router(status.router)
 
 
 @app.get("/", response_model=StatusMessage)
-def root():
+async def root():
     return {"message": "Hello"}
 
