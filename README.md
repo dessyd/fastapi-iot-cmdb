@@ -34,21 +34,22 @@ uvicorn app.main:app --reload
 ```mermaid
 flowchart LR
 
- s(schemas)
+
  c(config)
- m(models)
  d(database)
+ m(models)
  o(oauth2)
  ra(routers/auth)
  ru(routers/users)
+ s(schemas)
  u(utils)
 
  d --> c
  m --> d
+ o --> c
  o --> d
  o --> m
- o --> d
- o --> c
+ o --> s
 
  main --> ra
  main --> ru

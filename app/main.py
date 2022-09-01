@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from .routers import auth, users
+from .models import StatusOut
 
 # Needed if Alembic is not used to create / upgrade the structure
 # models.Base.metadata.create_all(bind=engine)
@@ -12,7 +13,7 @@ origins = [
     "https://localhost.tiangolo.com",
     "http://localhost",
     "http://localhost:8080",
-    "http://localhost:8000",
+    "https://localhost:8000",
 ]
 
 app = FastAPI()
@@ -32,3 +33,11 @@ app.include_router(auth.router)
 @app.get("/")
 def root():
     return {"message": "Hello Root"}
+
+@app.get("/status", response_model=StatusOut)
+def status():
+    return {
+        "status" : "OK", 
+        "message": "All Korrekt", 
+        "version": 1
+        }
