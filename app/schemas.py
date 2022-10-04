@@ -13,8 +13,10 @@ class LocationBase(BaseModel):
 class LocationCreate(LocationBase):
     pass 
 
-class Location(LocationBase):
-    id = int
+class LocationOut(LocationBase):
+
+    id : int
+    created_at: datetime
 
     class Config:
         orm_mode = True

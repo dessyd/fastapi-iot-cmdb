@@ -10,12 +10,12 @@ router = APIRouter(
   tags=["Locations"]
 )
 
-@router.get("/", response_model=List(schemas.Location))
+@router.get("/", response_model=List[schemas.LocationOut])
 async def get_locations(db: Session = Depends(get_db)):
     locations = db.query(models.Location).all()
     return locations
 
-@router.get("/{id}", response_model=schemas.LocationResponse)
+@router.get("/{id}", response_model=schemas.LocationOut)
 async def get_location(id: int, db: Session = Depends(get_db)):
 
     location = db.query(models.Location).filter(models.Location.id == id).first()
@@ -25,7 +25,7 @@ async def get_location(id: int, db: Session = Depends(get_db)):
     return location
 
 @router.post("/", status_code=status.HTTP_201_CREATED, 
-              response_model=schemas.LocationResponse)
+              response_model=schemas.LocationOut)
 async def create_location(location: schemas.LocationCreate, db: Session = Depends(get_db)):
 
     new_location = models.Location(**location.dict())
