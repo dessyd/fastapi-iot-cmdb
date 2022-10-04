@@ -1,39 +1,19 @@
-from datetime import datetime
-from typing import Optional
+from contextlib import nullcontext
+from email.policy import default
+from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, Float
+from sqlalchemy.orm import relationship
+from sqlalchemy.sql.expression import text
+from sqlalchemy.sql.sqltypes import TIMESTAMP
 
-from pydantic import BaseModel, EmailStr
-from pydantic.types import conint
+from .database import Base
 
-# Things
 
-class ThingBase(BaseModel):
+class Location(Base):
+    __tablename__ = "locations"
+    id = Column(Integer, primary_key=True, nullable=False)
+    name = Column(String, nullable=False)
+    lat = Column(Float, nullable=False, default=0.0)
+    lon = Column(Float, nullable=False, default=0.0)
+    created_at = Column(TIMESTAMP(timezone=True), nullable=False, server_default=text("now()"))
 
-    name = str
-    description = str
-    enabled = bool = True
-    location_id = int
-
-class Thing(ThingBase):
-    pass 
-
-class ThingResponse(Thing):
-    id = int
-    provisioned_at = datetime
-    class Config:
-        orm_mode = True
-
-# Locations
-
-class LocationBase(BaseModel):
-    name: str
-    lat: float
-    lon: float
-
-class Location(LocationBase):
-    pass 
-
-class LocationResponse(Location):
-    id = int
-    class Config:
-        orm_mode = True
-
+    
