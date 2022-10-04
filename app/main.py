@@ -1,8 +1,9 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from .routers import auth, users, status
-from .models import StatusMessage
+from .routers import locations, things
+from app import database
+
 
 # Needed if Alembic is not used to create / upgrade the structure
 # models.Base.metadata.create_all(bind=engine)
@@ -16,6 +17,8 @@ origins = [
     "https://localhost:8000",
 ]
 
+database.Base.metadata.create_all(bind=database.engine)
+
 app = FastAPI()
 
 app.add_middleware(
@@ -26,12 +29,11 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(users.router)
-app.include_router(auth.router)
-app.include_router(status.router)
+app.include_router(locations.router)
+app.include_router(things.router)
 
 
-@app.get("/", response_model=StatusMessage)
+@app.get("/")
 async def root():
-    return {"message": "Hello"}
+    return {"message": "FastAPI-IoT-CMDB", "version": "1.1.0"}
 

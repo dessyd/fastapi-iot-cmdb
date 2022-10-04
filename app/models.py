@@ -16,9 +16,11 @@ class ThingBase(BaseModel):
 class Thing(ThingBase):
     pass 
 
-class LocationResponse(Thing):
+class ThingResponse(Thing):
     id = int
     provisioned_at = datetime
+    class Config:
+        orm_mode = True
 
 # Locations
 
@@ -27,10 +29,11 @@ class LocationBase(BaseModel):
     lat: float
     lon: float
 
-class Loacation(LocationBase):
+class Location(LocationBase):
     pass 
 
-class LocationResponse(Loacation):
+class LocationResponse(Location):
     id = int
-
+    class Config:
+        orm_mode = True
 
