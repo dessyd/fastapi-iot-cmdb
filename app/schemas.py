@@ -13,6 +13,9 @@ class LocationBase(BaseModel):
 class LocationCreate(LocationBase):
     pass 
 
+class LocationUpdate(LocationBase):
+    pass 
+
 class LocationOut(LocationBase):
 
     id : int

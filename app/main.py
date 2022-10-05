@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from .routers import locations
+from .routers import locations, things
 from app import database
 
 
@@ -30,9 +30,10 @@ app.add_middleware(
 )
 
 app.include_router(locations.router)
+app.include_router(things.router)
 
 
 @app.get("/")
-async def root():
+async def who_am_i():
     return {"message": "FastAPI-IoT-CMDB", "version": "1.1.0"}
 
