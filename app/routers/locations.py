@@ -29,7 +29,6 @@ async def get_one_location(id: int, db: Session = Depends(get_db)):
 async def create_one_location(location: schemas.LocationCreate, db: Session = Depends(get_db)):
 
     new_location = models.Location(**location.dict())
-    print(new_location)
     db.add(new_location)
     db.commit()
     db.refresh(new_location)
