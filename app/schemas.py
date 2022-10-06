@@ -52,3 +52,10 @@ class ThingOut(ThingCreate):
     class Config:
         orm_mode = True
 
+class BoardBase(BaseModel):
+    id: int
+    name: str
+
+class SensorBase(BaseModel):
+    id: int
+    name: str
