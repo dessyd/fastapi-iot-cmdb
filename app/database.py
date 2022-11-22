@@ -1,3 +1,4 @@
+import csv
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
@@ -19,3 +20,14 @@ def get_db():
         yield db
     finally:
         db.close()
+
+
+# Init DB see: https://www.andrewvillazon.com/move-data-to-db-with-sqlalchemy/ 
+# def init_db(db: Session = Depends(get_db)):
+
+#     with open('init/boards.csv', encoding='utf-8', newline='') as csv_file:
+#         csvreader = csv.DictReader(csv_file, quotechar='"')
+#         listings = [Board(**row) for row in csvreader]
+
+#         db.add_all(listings)
+#         db.commit()

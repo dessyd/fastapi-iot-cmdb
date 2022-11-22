@@ -20,8 +20,7 @@ docker compose up -d
 # Initialize alembic file structure
 alembic init alembic
 # copy the project ini file
-cp app/alembic.env.py alembic/env.py
-# Autogenerate the database schema creation file
+©# Autogenerate the database schema creation file
 alembic revision --autogenerate -m "Application schema"
 # Execute the schema creation
 alembic upgrade head
