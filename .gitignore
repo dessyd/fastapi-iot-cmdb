@@ -145,5 +145,6 @@ tracking.txt
 .env
 test.py
 alembic
-alembic.ini
+# alembic.ini
+app/alembic.env.py
 alembic/
