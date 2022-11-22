@@ -1,4 +1,3 @@
-import csv
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
@@ -22,7 +21,7 @@ def get_db():
         db.close()
 
 
-# Init DB see: https://www.andrewvillazon.com/move-data-to-db-with-sqlalchemy/ 
+# Init DB see: https://www.andrewvillazon.com/move-data-to-db-with-sqlalchemy/
 # def init_db(db: Session = Depends(get_db)):
 
 #     with open('init/boards.csv', encoding='utf-8', newline='') as csv_file:
