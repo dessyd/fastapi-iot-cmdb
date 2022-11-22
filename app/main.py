@@ -1,9 +1,9 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from .routers import locations, things
 from app import database
 
+from .routers import locations, things
 
 # Needed if Alembic is not used to create / upgrade the structure
 # models.Base.metadata.create_all(bind=engine)
@@ -36,4 +36,3 @@ app.include_router(things.router)
 @app.get("/")
 async def who_am_i():
     return {"message": "FastAPI-IoT-CMDB", "version": "1.1.0"}
-
