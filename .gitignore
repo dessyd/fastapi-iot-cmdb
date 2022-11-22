@@ -144,6 +144,6 @@ cython_debug/
 tracking.txt
 .env
 
-# alembic
-# alembic.ini
-# alembic/
+alembic
+alembic.ini
+alembic/
