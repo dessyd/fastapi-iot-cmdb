@@ -143,7 +143,7 @@ cython_debug/
 # My own stuff
 tracking.txt
 .env
-
+test.py
 alembic
 alembic.ini
 alembic/
