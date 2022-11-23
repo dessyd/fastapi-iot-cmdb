@@ -1,0 +1,359 @@
+{
+	"info": {
+		"_postman_id": "d51c3fa1-6e84-46f3-b585-ca4885d30b24",
+		"name": "ThingsAPI",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_uid": "796612-d51c3fa1-6e84-46f3-b585-ca4885d30b24"
+	},
+	"item": [
+		{
+			"name": "root",
+			"id": "d69047b1-203b-4fdf-933c-f57e8423183c",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{URL}}",
+					"host": [
+						"{{URL}}"
+					]
+				}
+			},
+			"response": [
+				{
+					"id": "6a9c12cc-8b4b-488b-bb6a-e4f687fb09ea",
+					"name": "root",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}",
+							"host": [
+								"{{URL}}"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "date",
+							"value": "Tue, 22 Nov 2022 17:35:47 GMT"
+						},
+						{
+							"key": "server",
+							"value": "uvicorn"
+						},
+						{
+							"key": "content-length",
+							"value": "48"
+						},
+						{
+							"key": "content-type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"message\": \"FastAPI-IoT-CMDB\",\n    \"version\": \"1.1.0\"\n}"
+				},
+				{
+					"id": "5fd49477-4e16-4006-8045-1c9329908b3e",
+					"name": "root",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}",
+							"host": [
+								"{{URL}}"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "date",
+							"value": "Tue, 22 Nov 2022 17:46:10 GMT"
+						},
+						{
+							"key": "server",
+							"value": "uvicorn"
+						},
+						{
+							"key": "content-length",
+							"value": "48"
+						},
+						{
+							"key": "content-type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"message\": \"FastAPI-IoT-CMDB\",\n    \"version\": \"1.1.0\"\n}"
+				}
+			]
+		},
+		{
+			"name": "Get all locations",
+			"id": "cfe9b806-d385-4567-9975-6bf15adb3ef2",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{URL}}/locations",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"locations"
+					]
+				}
+			},
+			"response": [
+				{
+					"id": "e100f913-fd58-4706-a3d1-eb7c1fa98091",
+					"name": "Get all locations",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/locations",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"locations"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "date",
+							"value": "Wed, 23 Nov 2022 07:00:19 GMT"
+						},
+						{
+							"key": "server",
+							"value": "uvicorn"
+						},
+						{
+							"key": "content-length",
+							"value": "226"
+						},
+						{
+							"key": "content-type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "[\n    {\n        \"name\": \"940 Crooks View\",\n        \"lat\": -80.2677,\n        \"lon\": 155.1473,\n        \"id\": 1,\n        \"created_at\": \"2022-11-22T17:03:50.292672+00:00\"\n    },\n    {\n        \"name\": \"34948 Hyatt Dale\",\n        \"lat\": -86.3573,\n        \"lon\": -53.2018,\n        \"id\": 2,\n        \"created_at\": \"2022-11-22T17:28:32.926602+00:00\"\n    }\n]"
+				}
+			]
+		},
+		{
+			"name": "Get one location",
+			"id": "4677dcd0-691b-43f2-8526-1e7d3ead73cc",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{URL}}/locations/1",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"locations",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create a location",
+			"id": "f45ebbdb-b799-45db-b85e-ce86f7289c44",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"{{$randomStreetAddress}}\",\n    \"lat\": {{$randomLatitude}},\n    \"lon\": {{$randomLongitude}}\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL}}/locations",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"locations"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete a location",
+			"id": "a001ab88-736a-4653-87a8-448b8580048a",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL}}/locations/2",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"locations",
+						"2"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update a location",
+			"id": "ded92a62-4431-41f4-8f2b-12a6f5a23a06",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"{{$randomStreetAddress}}\",\n    \"lat\": {{$randomLatitude}},\n    \"lon\": {{$randomLongitude}}\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL}}/locations/3",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"locations",
+						"3"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get all things",
+			"id": "c90f371a-cd28-4000-9f12-0538ad67289f",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{URL}}/things",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"things"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create a thing",
+			"id": "a99632a6-57bb-456a-9ab0-8f5afa704153",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"mac\": \"{{$randomMACAddress}}\",\n    \"name\": \"{{$guid}}\",\n    \"location_id\": 1\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL}}/things",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"things"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "d6f85230-6d15-4da7-aff9-1edf3a92cefb",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "ceb7293b-eecb-4fbc-bcf8-2cc8856417c3",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"id": "0b5aa966-77e8-4261-9a20-693bc2c12290",
+			"key": "URL",
+			"value": "http://localhost:8000"
+		}
+	]
+}
