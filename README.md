@@ -8,15 +8,17 @@
 # Install Postgres
 brew install postgresql
 # Create virtual environment
-python3 -m venv venv
+python3 -m venv .venv
 # Activate it
-source venv/bin/activate
+source .venv/bin/activate
 # make sure pip is up to date
 pip install --upgrade pip
 # install project's requirements
 pip install -r requirements.txt
 # Install pre-commit
 pre-commit install
+# Auto update to latest hooks
+pre-commit autoupdate
 # Have a first test
 pre-commit run --all-files
 # start database engine
@@ -24,7 +26,7 @@ docker compose up -d
 # Initialize alembic file structure
 alembic init alembic
 # copy the project ini file
-©# Autogenerate the database schema creation file
+# Autogenerate the database schema creation file
 alembic revision --autogenerate -m "Application schema"
 # Execute the schema creation
 alembic upgrade head
