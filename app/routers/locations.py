@@ -17,7 +17,6 @@ async def get_all_locations(db: Session = Depends(get_db)):
 
 @router.get("/{id}", response_model=schemas.LocationOut)
 async def get_one_location(id: int, db: Session = Depends(get_db)):
-
     location = db.query(models.Location).filter(models.Location.id == id).first()
     if location is None:
         raise HTTPException(
@@ -28,7 +27,6 @@ async def get_one_location(id: int, db: Session = Depends(get_db)):
 
 @router.post("/", status_code=status.HTTP_201_CREATED, response_model=schemas.LocationOut)
 async def create_one_location(location: schemas.LocationCreate, db: Session = Depends(get_db)):
-
     new_location = models.Location(**location.dict())
     db.add(new_location)
     db.commit()
@@ -39,7 +37,6 @@ async def create_one_location(location: schemas.LocationCreate, db: Session = De
 
 @router.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_one_location(id: int, db: Session = Depends(get_db)):
-
     location = db.query(models.Location).filter(models.Location.id == id)
     first_location = location.first()
 
@@ -56,7 +53,6 @@ async def delete_one_location(id: int, db: Session = Depends(get_db)):
 
 @router.put("/{id}", response_model=schemas.LocationOut)
 def update_one_location(id: int, location: schemas.LocationUpdate, db: Session = Depends(get_db)):
-
     location_query = db.query(models.Location).filter(models.Location.id == id)
     first_location = location_query.first()
 
