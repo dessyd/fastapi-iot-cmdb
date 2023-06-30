@@ -2,6 +2,8 @@
 
 ## Details
 
+https://github.com/dessyd/fastapi-iot-cmdb/blob/8bbc65c39444d01ab2a76daaf44e976fb4685111/setup.sh
+
 ### Local Setup
 
 ```bash
