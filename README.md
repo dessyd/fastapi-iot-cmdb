@@ -2,7 +2,8 @@
 
 ## Details
 
-https://github.com/dessyd/fastapi-iot-cmdb/blob/8bbc65c39444d01ab2a76daaf44e976fb4685111/setup.sh
+https://github.com/dessyd/fastapi-iot-cmdb/blob/7afa3ced8e9d8d89754d945572939c415c53250d/setup.sh#L1-L17
+
 
 ### Local Setup
 
