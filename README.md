@@ -2,28 +2,16 @@
 
 ## Details
 
-https://github.com/dessyd/fastapi-iot-cmdb/blob/7afa3ced8e9d8d89754d945572939c415c53250d/setup.sh#L1-L17
+
 
 
 ### Local Setup
 
+https://github.com/dessyd/fastapi-iot-cmdb/blob/7afa3ced8e9d8d89754d945572939c415c53250d/setup.sh#L1-L17
+
+### Run the Environment
+
 ```bash
-# Install Postgres
-brew install postgresql
-# Create virtual environment
-python3 -m venv .venv
-# Activate it
-source .venv/bin/activate
-# make sure pip is up to date
-pip install --upgrade pip
-# install project's requirements
-pip install -r requirements.txt
-# Install pre-commit
-pre-commit install
-# Auto update to latest hooks
-pre-commit autoupdate
-# Have a first test
-pre-commit run --all-files
 # start database engine
 docker compose up -d
 # Initialize alembic file structure
