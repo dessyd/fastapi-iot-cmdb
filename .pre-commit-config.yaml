@@ -5,8 +5,9 @@ repos:
     rev: v4.4.0
     hooks:
     -   id: trailing-whitespace
+    -   id: check-case-conflict
+    -   id: mixed-line-ending
     -   id: end-of-file-fixer
-    -   id: check-yaml
     -   id: check-added-large-files
     -   id: requirements-txt-fixer
     -   id: check-yaml
@@ -14,14 +15,12 @@ repos:
     -   id: pretty-format-json
         args: ['--autofix']
     -   id: check-merge-conflict
-    -   id: check-case-conflict
     -   id: check-docstring-first
 
 -   repo: https://github.com/psf/black
-    rev: 23.3.0
+    rev: 23.7.0
     hooks:
     - id: black
-      language_version: python3.9
       args:
         - --line-length=100
 -   repo: https://github.com/pycqa/flake8
@@ -49,3 +48,8 @@ repos:
         - --in-place
         - --remove-unused-variables
         - --remove-all-unused-imports
+# - repo: https://github.com/econchick/interrogate
+#   rev: 1.5.0
+#   hooks:
+#     - id: interrogate
+#       args: [-vv, -i]
