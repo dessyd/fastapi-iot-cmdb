@@ -17,7 +17,7 @@ async def get_all_things(db: Session = Depends(get_db)):
 
 @router.post("/", response_model=schemas.ThingOut, status_code=status.HTTP_201_CREATED)
 def create_one_thing(thing: schemas.ThingCreate, db: Session = Depends(get_db)):
-    new_thing = models.Thing(**thing.dict())
+    new_thing = models.Thing(**thing.model_dump())
 
     db.add(new_thing)
     db.commit()
