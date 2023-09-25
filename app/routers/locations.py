@@ -27,7 +27,7 @@ async def get_one_location(id: int, db: Session = Depends(get_db)):
 
 @router.post("/", status_code=status.HTTP_201_CREATED, response_model=schemas.LocationOut)
 async def create_one_location(location: schemas.LocationCreate, db: Session = Depends(get_db)):
-    new_location = models.Location(**location.dict())
+    new_location = models.Location(**location.model_dump())
     db.add(new_location)
     db.commit()
     db.refresh(new_location)
