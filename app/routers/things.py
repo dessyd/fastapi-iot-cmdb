@@ -30,7 +30,7 @@ def create_one_thing(thing: schemas.ThingCreate, db: Session = Depends(get_db)):
 
 @router.put("/{id}", response_model=schemas.ThingOut)
 def update_one_thing(
-    id: Annotated[int, Path(title="The ID of the thing to get")],
+    id: Annotated[int, Path(description="The ID of the thing to update")],
     thing: schemas.ThingUpdate,
     db: Session = Depends(get_db),
 ):
