@@ -23,7 +23,7 @@ class LocationJoin(LocationBase):
     pass
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class LocationOut(LocationBase):
@@ -31,7 +31,7 @@ class LocationOut(LocationBase):
     created_at: datetime
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 # Things
@@ -56,7 +56,7 @@ class ThingOut(ThingCreate):
     location: LocationJoin
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class BoardBase(BaseModel):

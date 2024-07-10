@@ -1,6 +1,7 @@
-from typing import List
+from typing import Annotated, List
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Path, status
+from fastapi.encoders import jsonable_encoder
 from sqlalchemy.orm import Session
 
 from .. import models, schemas
@@ -16,7 +17,9 @@ async def get_all_locations(db: Session = Depends(get_db)):
 
 
 @router.get("/{id}", response_model=schemas.LocationOut)
-async def get_one_location(id: int, db: Session = Depends(get_db)):
+async def get_one_location(
+    id: Annotated[int, Path(title="The ID of the location to get")], db: Session = Depends(get_db)
+):
     location = db.query(models.Location).filter(models.Location.id == id).first()
     if location is None:
         raise HTTPException(
@@ -61,7 +64,7 @@ def update_one_location(id: int, location: schemas.LocationUpdate, db: Session =
             status_code=status.HTTP_404_NOT_FOUND, detail=f"location with id: {id} does not exist"
         )
 
-    location_query.update(location.dict(), synchronize_session=False)
+    location_query.update(jsonable_encoder(location), synchronize_session=False)
     db.commit()
 
     return location_query.first()

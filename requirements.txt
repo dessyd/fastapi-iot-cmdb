@@ -4,7 +4,7 @@ passlib
 pre-commit
 psycopg2-binary
 pydantic
-pydantic[email]
+pydantic_settings
 python-dotenv
 python-jose
 python-multipart
