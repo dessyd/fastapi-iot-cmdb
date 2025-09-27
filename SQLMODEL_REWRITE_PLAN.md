@@ -8,21 +8,21 @@ This document outlines a complete rewrite of the FastAPI IoT CMDB using SQLModel
 
 ### Current Problems
 - **Duplicate field definitions**: Same fields defined in both SQLAlchemy models and Pydantic schemas
-- **Complex schema hierarchy**: 10+ schema classes for 4 data models
+- **Complex schema hierarchy**: 8 schema classes for 2 data models
 - **Inconsistent patterns**: Mixed async/sync operations
 - **Maintenance overhead**: Changes require updates in multiple places
 
 ### Current Structure
 ```
 Current (SQLAlchemy + Pydantic):
-- models.py: 4 SQLAlchemy classes (38 lines)
-- schemas.py: 10+ Pydantic classes (70 lines)
-- Total: ~108 lines for data definitions
+- models.py: 2 SQLAlchemy classes (Thing, Location)
+- schemas.py: 8 Pydantic classes (LocationBase, LocationCreate, LocationUpdate, LocationJoin, LocationOut, ThingBase, ThingCreate, ThingUpdate, ThingOut)
+- Total: ~10 classes, ~60 lines for data definitions
 
 Future (SQLModel):
-- models.py: 4-6 unified classes (~60 lines)
-- Total: ~60 lines for data definitions
-- Reduction: ~45% less code
+- models.py: 6 unified classes (LocationBase, Location, LocationCreate, LocationUpdate, LocationRead, ThingBase, Thing, ThingCreate, ThingUpdate, ThingRead, ThingReadWithLocation)
+- Total: ~11 classes, ~40 lines for data definitions
+- Reduction: ~35% less code with unified functionality
 ```
 
 ## SQLModel Rewrite Benefits
@@ -173,36 +173,6 @@ class ThingReadWithLocation(ThingRead):
     location: Optional[LocationRead] = None
 ```
 
-#### 2.3 Board and Sensor Models
-```python
-class BoardBase(SQLModel):
-    name: str = Field(min_length=1, max_length=255)
-
-class Board(BoardBase, table=True):
-    __tablename__ = "boards"
-
-    id: Optional[int] = Field(default=None, primary_key=True)
-
-class BoardCreate(BoardBase):
-    pass
-
-class BoardRead(BoardBase):
-    id: int
-
-class SensorBase(SQLModel):
-    name: str = Field(min_length=1, max_length=255)
-
-class Sensor(SensorBase, table=True):
-    __tablename__ = "sensors"
-
-    id: Optional[int] = Field(default=None, primary_key=True)
-
-class SensorCreate(SensorBase):
-    pass
-
-class SensorRead(SensorBase):
-    id: int
-```
 
 ### Phase 3: Database Operations Rewrite
 
@@ -427,8 +397,6 @@ async def create_thing(thing: ThingCreate, session: Session = Depends(get_sessio
 ### Phase 2: Models
 - [ ] Create unified Location models
 - [ ] Create unified Thing models
-- [ ] Create unified Board models
-- [ ] Create unified Sensor models
 - [ ] Add comprehensive field validation
 
 ### Phase 3: Database Operations
@@ -483,7 +451,8 @@ Location ecosystem:
 - LocationCreate (API input)
 - LocationUpdate (API update)
 - LocationRead (API output)
-Total: 5 classes (-17% reduction)
+- LocationReadWithThings (with relationships)
+Total: 6 classes (same count, but unified functionality)
 
 Thing ecosystem:
 - ThingBase (shared fields)
@@ -494,7 +463,7 @@ Thing ecosystem:
 - ThingReadWithLocation (with relationships)
 Total: 6 classes (+20% for better relationship handling)
 
-Overall: 11 classes for 2 entities (same count, but unified functionality)
+Overall: 12 classes for 2 entities (+9% classes but 35% less code)
 ```
 
 ### Code Reduction Benefits
@@ -502,6 +471,7 @@ Overall: 11 classes for 2 entities (same count, but unified functionality)
 - **Validation logic**: Single definition with automatic API/DB validation
 - **Type hints**: Consistent across all layers
 - **Maintenance**: Single place to update field definitions
+- **Simplified architecture**: Focus on core entities (Location and Thing only)
 
 ## Database Operations Impact
 
