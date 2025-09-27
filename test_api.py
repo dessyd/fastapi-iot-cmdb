@@ -24,6 +24,8 @@ class APITestSuite:
         self.initial_location_count: int = 0
         self.updated_lat: float = 0.0
         self.updated_lon: float = 0.0
+        self.initial_things_count: int = 0
+        self.thing_id: Optional[int] = None
 
     def generate_random_name(self, length: int = 8) -> str:
         """Generate a random string for location name"""
@@ -34,6 +36,15 @@ class APITestSuite:
         lat = round(random.uniform(-90, 90), 6)
         lon = round(random.uniform(-180, 180), 6)
         return lat, lon
+
+    def generate_random_mac_address(self) -> str:
+        """Generate a random MAC address in XX:XX:XX:XX:XX:XX format"""
+        mac_parts = []
+        for _ in range(6):
+            # Generate random hex byte
+            hex_byte = f"{random.randint(0, 255):02X}"
+            mac_parts.append(hex_byte)
+        return ":".join(mac_parts)
 
     def start_server(self) -> bool:
         """Start the FastAPI server"""
@@ -320,6 +331,130 @@ class APITestSuite:
             print(f"❌ Error testing GET /locations with data: {e}")
             return False
 
+    def test_get_all_things_initial(self) -> bool:
+        """Test GET /things returns a list (may contain existing data)"""
+        try:
+            print("📋 Testing GET /things (initial state)...")
+            response = requests.get(f"{self.base_url}/things")
+
+            if response.status_code != 200:
+                print(f"❌ Expected status 200, got {response.status_code}")
+                return False
+
+            things = response.json()
+            if not isinstance(things, list):
+                print(f"❌ Expected list, got {type(things)}")
+                return False
+
+            initial_count = len(things)
+            print(f"✅ GET /things returns list with {initial_count} existing things")
+            self.initial_things_count = initial_count
+            return True
+        except Exception as e:
+            print(f"❌ Error testing GET /things: {e}")
+            return False
+
+    def test_create_thing(self) -> bool:
+        """Test POST /things to create a new thing"""
+        try:
+            if self.location_id is None:
+                print("❌ No location ID available for creating thing")
+                return False
+
+            # Generate random data
+            name = self.generate_random_name()
+            mac = self.generate_random_mac_address()
+
+            print(f"📱 Creating thing: {name} with MAC {mac} at location {self.location_id}...")
+
+            thing_data = {"name": name, "mac": mac, "location_id": self.location_id}
+
+            response = requests.post(
+                f"{self.base_url}/things",
+                json=thing_data,
+                headers={"Content-Type": "application/json"},
+            )
+
+            if response.status_code != 201:
+                print(f"❌ Expected status 201, got {response.status_code}")
+                print(f"Response: {response.text}")
+                return False
+
+            created_thing = response.json()
+
+            # Validate response structure
+            required_fields = ["id", "name", "mac", "location_id", "created_at"]
+            for field in required_fields:
+                if field not in created_thing:
+                    print(f"❌ Missing field '{field}' in response")
+                    return False
+
+            # Validate data matches
+            if created_thing["name"] != name:
+                print(f"❌ Name mismatch: expected {name}, got {created_thing['name']}")
+                return False
+
+            if created_thing["mac"] != mac:
+                print(f"❌ MAC mismatch: expected {mac}, got {created_thing['mac']}")
+                return False
+
+            if created_thing["location_id"] != self.location_id:
+                print(
+                    f"❌ Location ID mismatch: expected {self.location_id}, got {created_thing['location_id']}"
+                )
+                return False
+
+            # Store thing ID for subsequent tests
+            self.thing_id = created_thing["id"]
+            print(f"✅ Thing created successfully with ID: {self.thing_id}")
+            return True
+
+        except Exception as e:
+            print(f"❌ Error creating thing: {e}")
+            return False
+
+    def test_get_thing_by_id(self) -> bool:
+        """Test GET /things/{id} to retrieve the created thing"""
+        try:
+            if self.thing_id is None:
+                print("❌ No thing ID available for testing")
+                return False
+
+            print(f"🔍 Retrieving thing by ID: {self.thing_id}...")
+
+            response = requests.get(f"{self.base_url}/things/{self.thing_id}")
+
+            if response.status_code != 200:
+                print(f"❌ Expected status 200, got {response.status_code}")
+                return False
+
+            thing = response.json()
+
+            # Validate ID matches
+            if thing["id"] != self.thing_id:
+                print(f"❌ ID mismatch: expected {self.thing_id}, got {thing['id']}")
+                return False
+
+            # Validate it has location relationship
+            if "location" not in thing:
+                print("❌ Thing should include location relationship")
+                return False
+
+            if thing["location"]["id"] != self.location_id:
+                print(
+                    f"❌ Location ID mismatch: expected {self.location_id}, got {thing['location']['id']}"
+                )
+                return False
+
+            print(
+                f"✅ Retrieved thing: {thing['name']} (MAC: {thing['mac']}) at location '{thing['location']['name']}'"
+            )
+            return True
+
+        except Exception as e:
+            print(f"❌ Error retrieving thing by ID: {e}")
+            return False
+
     def run_test_suite(self) -> bool:
         """Run the complete test suite"""
         print("🧪 Starting FastAPI IoT CMDB Test Suite")
@@ -338,6 +473,9 @@ class APITestSuite:
                 ("Test update location", self.test_update_location),
                 ("Test get updated location by ID", self.test_get_updated_location_by_id),
                 ("Test locations list with data", self.test_get_all_locations_with_data),
+                ("Test initial things list", self.test_get_all_things_initial),
+                ("Test create thing", self.test_create_thing),
+                ("Test get thing by ID", self.test_get_thing_by_id),
             ]
 
             passed = 0
