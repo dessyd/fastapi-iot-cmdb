@@ -17,7 +17,7 @@ async def get_all_things(db: Session = Depends(get_db)):
 
 
 @router.post("/", response_model=schemas.ThingOut, status_code=status.HTTP_201_CREATED)
-def create_one_thing(thing: schemas.ThingCreate, db: Session = Depends(get_db)):
+async def create_one_thing(thing: schemas.ThingCreate, db: Session = Depends(get_db)):
     new_thing = models.Thing(**thing.model_dump())
 
     db.add(new_thing)
@@ -29,7 +29,7 @@ def create_one_thing(thing: schemas.ThingCreate, db: Session = Depends(get_db)):
 
 
 @router.put("/{id}", response_model=schemas.ThingOut)
-def update_one_thing(
+async def update_one_thing(
     id: Annotated[int, Path(description="The ID of the thing to update")],
     thing: schemas.ThingUpdate,
     db: Session = Depends(get_db),
@@ -39,7 +39,8 @@ def update_one_thing(
 
     if first_thing is None:
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail=f"thing with id: {id} does not exist"
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"thing with id: {id} does not exist",
         )
 
     thing_query.update(jsonable_encoder(thing), synchronize_session=False)

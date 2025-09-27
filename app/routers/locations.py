@@ -10,7 +10,7 @@ from ..database import get_db
 router = APIRouter(prefix="/locations", tags=["Locations"])
 
 
-@router.get("/", response_model=List[schemas.LocationOut])
+@router.get("", response_model=List[schemas.LocationOut])
 async def get_all_locations(db: Session = Depends(get_db)):
     """
     Returns all known locations
@@ -36,7 +36,11 @@ async def get_one_location(
     return location
 
 
-@router.post("/", status_code=status.HTTP_201_CREATED, response_model=schemas.LocationOut)
+@router.post(
+    "",
+    status_code=status.HTTP_201_CREATED,
+    response_model=schemas.LocationOut,
+)
 async def create_one_location(location: schemas.LocationCreate, db: Session = Depends(get_db)):
     """
     Create a new location
@@ -60,7 +64,7 @@ async def delete_one_location(
     if first_location is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"Location with id: {id} does not exeist",
+            detail=f"Location with id: {id} does not exist",
         )
 
     location.delete(synchronize_session=False)
@@ -70,7 +74,7 @@ async def delete_one_location(
 
 
 @router.put("/{id}", response_model=schemas.LocationOut)
-def update_one_location(
+async def update_one_location(
     id: Annotated[int, Path(description="The ID of the location to update")],
     location: schemas.LocationUpdate,
     db: Session = Depends(get_db),

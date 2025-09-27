@@ -60,3 +60,7 @@ flowchart LR
  ru --> d
 
 ```
+
+## Some Postgres details
+
+See more on Foreign Keys and constraints [here](https://postgreswithexample.com/sql-tutorials/foreign-key-constraints-in-postgresql).
