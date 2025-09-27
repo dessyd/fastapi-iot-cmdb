@@ -1,13 +1,22 @@
+from contextlib import asynccontextmanager
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.openapi.utils import get_openapi
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 
+from .database import create_db_and_tables
 from .routers import locations, things
 
-# Needed if Alembic is not used to create / upgrade the structure
-# models.Base.metadata.create_all(bind=engine)
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """Application lifespan manager for startup and shutdown events"""
+    # Startup: Create database tables
+    create_db_and_tables()
+    yield
+    # Shutdown: cleanup if needed
 
 
 origins = [
@@ -17,8 +26,6 @@ origins = [
     "http://localhost:8080",
     "https://localhost:8000",
 ]
-
-# database.create_db_and_tables()  # Enable when database is available
 
 
 def custom_openapi():
@@ -62,7 +69,7 @@ def custom_openapi():
     return app.openapi_schema
 
 
-app = FastAPI()
+app = FastAPI(lifespan=lifespan)
 app.openapi = custom_openapi
 
 app.add_middleware(
