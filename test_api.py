@@ -22,6 +22,8 @@ class APITestSuite:
         self.server_process: Optional[subprocess.Popen] = None
         self.location_id: Optional[int] = None
         self.initial_location_count: int = 0
+        self.updated_lat: float = 0.0
+        self.updated_lon: float = 0.0
 
     def generate_random_name(self, length: int = 8) -> str:
         """Generate a random string for location name"""
@@ -175,6 +177,107 @@ class APITestSuite:
             print(f"❌ Error retrieving location by ID: {e}")
             return False
 
+    def test_update_location(self) -> bool:
+        """Test PUT /locations/{id} to update the created location"""
+        try:
+            if self.location_id is None:
+                print("❌ No location ID available for testing")
+                return False
+
+            # Generate new random coordinates
+            new_lat, new_lon = self.generate_random_coordinates()
+            print(
+                f"🔄 Updating location ID {self.location_id} to new coordinates ({new_lat}, {new_lon})..."
+            )
+
+            update_data = {"lat": new_lat, "lon": new_lon}
+
+            response = requests.put(
+                f"{self.base_url}/locations/{self.location_id}",
+                json=update_data,
+                headers={"Content-Type": "application/json"},
+            )
+
+            if response.status_code != 200:
+                print(f"❌ Expected status 200, got {response.status_code}")
+                print(f"Response: {response.text}")
+                return False
+
+            updated_location = response.json()
+
+            # Validate coordinates were updated
+            if abs(updated_location["lat"] - new_lat) > 0.000001:
+                print(f"❌ Latitude not updated: expected {new_lat}, got {updated_location['lat']}")
+                return False
+
+            if abs(updated_location["lon"] - new_lon) > 0.000001:
+                print(
+                    f"❌ Longitude not updated: expected {new_lon}, got {updated_location['lon']}"
+                )
+                return False
+
+            # Validate ID remains the same
+            if updated_location["id"] != self.location_id:
+                print(
+                    f"❌ ID changed during update: expected {self.location_id}, got {updated_location['id']}"
+                )
+                return False
+
+            # Store new coordinates for subsequent verification
+            self.updated_lat = new_lat
+            self.updated_lon = new_lon
+
+            print(f"✅ Location updated successfully to ({new_lat}, {new_lon})")
+            return True
+
+        except Exception as e:
+            print(f"❌ Error updating location: {e}")
+            return False
+
+    def test_get_updated_location_by_id(self) -> bool:
+        """Test GET /locations/{id} to verify the updated location"""
+        try:
+            if self.location_id is None:
+                print("❌ No location ID available for testing")
+                return False
+
+            print(f"🔍 Retrieving updated location by ID: {self.location_id}...")
+
+            response = requests.get(f"{self.base_url}/locations/{self.location_id}")
+
+            if response.status_code != 200:
+                print(f"❌ Expected status 200, got {response.status_code}")
+                return False
+
+            location = response.json()
+
+            # Validate ID matches
+            if location["id"] != self.location_id:
+                print(f"❌ ID mismatch: expected {self.location_id}, got {location['id']}")
+                return False
+
+            # Validate coordinates match the updated values
+            if abs(location["lat"] - self.updated_lat) > 0.000001:
+                print(
+                    f"❌ Updated latitude not persisted: expected {self.updated_lat}, got {location['lat']}"
+                )
+                return False
+
+            if abs(location["lon"] - self.updated_lon) > 0.000001:
+                print(
+                    f"❌ Updated longitude not persisted: expected {self.updated_lon}, got {location['lon']}"
+                )
+                return False
+
+            print(
+                f"✅ Retrieved updated location: {location['name']} at ({location['lat']}, {location['lon']})"
+            )
+            return True
+
+        except Exception as e:
+            print(f"❌ Error retrieving updated location by ID: {e}")
+            return False
+
     def test_get_all_locations_with_data(self) -> bool:
         """Test GET /locations returns the created location"""
         try:
@@ -232,6 +335,8 @@ class APITestSuite:
                 ("Test initial locations list", self.test_get_all_locations_initial),
                 ("Test create location", self.test_create_location),
                 ("Test get location by ID", self.test_get_location_by_id),
+                ("Test update location", self.test_update_location),
+                ("Test get updated location by ID", self.test_get_updated_location_by_id),
                 ("Test locations list with data", self.test_get_all_locations_with_data),
             ]
 
