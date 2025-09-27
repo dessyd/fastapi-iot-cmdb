@@ -21,6 +21,7 @@ class APITestSuite:
         self.base_url = base_url
         self.server_process: Optional[subprocess.Popen] = None
         self.location_id: Optional[int] = None
+        self.initial_location_count: int = 0
 
     def generate_random_name(self, length: int = 8) -> str:
         """Generate a random string for location name"""
@@ -67,10 +68,10 @@ class APITestSuite:
             self.server_process.wait()
             print("✅ Server stopped")
 
-    def test_get_all_locations_empty(self) -> bool:
-        """Test GET /locations returns empty list initially"""
+    def test_get_all_locations_initial(self) -> bool:
+        """Test GET /locations returns a list (may contain existing data)"""
         try:
-            print("📋 Testing GET /locations (should be empty)...")
+            print("📋 Testing GET /locations (initial state)...")
             response = requests.get(f"{self.base_url}/locations")
 
             if response.status_code != 200:
@@ -82,11 +83,9 @@ class APITestSuite:
                 print(f"❌ Expected list, got {type(locations)}")
                 return False
 
-            if len(locations) != 0:
-                print(f"❌ Expected empty list, got {len(locations)} locations")
-                return False
-
-            print("✅ GET /locations returns empty list")
+            initial_count = len(locations)
+            print(f"✅ GET /locations returns list with {initial_count} existing locations")
+            self.initial_location_count = initial_count
             return True
         except Exception as e:
             print(f"❌ Error testing GET /locations: {e}")
@@ -193,17 +192,25 @@ class APITestSuite:
                 print(f"❌ Expected list, got {type(locations)}")
                 return False
 
-            if len(locations) != 1:
-                print(f"❌ Expected 1 location, got {len(locations)} locations")
+            expected_count = self.initial_location_count + 1
+            if len(locations) != expected_count:
+                print(f"❌ Expected {expected_count} locations, got {len(locations)} locations")
                 return False
 
-            # Validate the location is our created one
-            location = locations[0]
-            if location["id"] != self.location_id:
-                print(f"❌ Location ID mismatch: expected {self.location_id}, got {location['id']}")
+            # Validate our created location is in the list
+            found_location = None
+            for location in locations:
+                if location["id"] == self.location_id:
+                    found_location = location
+                    break
+
+            if found_location is None:
+                print(f"❌ Created location with ID {self.location_id} not found in locations list")
                 return False
 
-            print(f"✅ GET /locations returns 1 location with correct ID: {self.location_id}")
+            print(
+                f"✅ GET /locations returns {len(locations)} locations including our created location ID: {self.location_id}"
+            )
             return True
 
         except Exception as e:
@@ -222,7 +229,7 @@ class APITestSuite:
 
             # Run tests in sequence
             tests = [
-                ("Test empty locations list", self.test_get_all_locations_empty),
+                ("Test initial locations list", self.test_get_all_locations_initial),
                 ("Test create location", self.test_create_location),
                 ("Test get location by ID", self.test_get_location_by_id),
                 ("Test locations list with data", self.test_get_all_locations_with_data),
