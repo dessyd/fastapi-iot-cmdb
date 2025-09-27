@@ -7,7 +7,11 @@ from sqlalchemy.orm import Session
 from .. import models, schemas
 from ..database import get_db
 
-router = APIRouter(prefix="/locations", tags=["Locations"])
+router = APIRouter(
+    prefix="/locations",
+    tags=["Locations"],
+    responses={404: {"description": "Location not found"}},
+)
 
 
 @router.get("", response_model=List[schemas.LocationOut])
