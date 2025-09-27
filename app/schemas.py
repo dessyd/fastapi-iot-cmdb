@@ -57,13 +57,3 @@ class ThingOut(ThingCreate):
 
     class Config:
         from_attributes = True
-
-
-class BoardBase(BaseModel):
-    id: int
-    name: str
-
-
-class SensorBase(BaseModel):
-    id: int
-    name: str

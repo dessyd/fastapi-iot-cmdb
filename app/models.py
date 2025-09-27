@@ -23,15 +23,3 @@ class Location(Base):
     lat = Column(Float, nullable=False, default=0.0)
     lon = Column(Float, nullable=False, default=0.0)
     created_at = Column(TIMESTAMP(timezone=True), nullable=False, server_default=text("now()"))
-
-
-class Board(Base):
-    __tablename__ = "boards"
-    id = Column(Integer, primary_key=True, nullable=False)
-    name = Column(String, nullable=False)
-
-
-class Sensor(Base):
-    __tablename__ = "sensors"
-    id = Column(Integer, primary_key=True, nullable=False)
-    name = Column(String, nullable=False)
