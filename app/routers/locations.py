@@ -1,11 +1,10 @@
 from typing import Annotated, List
 
 from fastapi import APIRouter, Depends, HTTPException, Path, status
-from fastapi.encoders import jsonable_encoder
-from sqlalchemy.orm import Session
+from sqlmodel import Session, select
 
-from .. import models, schemas
-from ..database import get_db
+from ..database import get_session
+from ..models import Location, LocationCreate, LocationRead, LocationUpdate
 
 router = APIRouter(
     prefix="/locations",
@@ -14,24 +13,26 @@ router = APIRouter(
 )
 
 
-@router.get("", response_model=List[schemas.LocationOut])
-async def get_all_locations(db: Session = Depends(get_db)):
+@router.get("", response_model=List[LocationRead])
+async def get_all_locations(session: Session = Depends(get_session)):
     """
     Returns all known locations
     """
-    locations = db.query(models.Location).all()
+    statement = select(Location)
+    locations = session.exec(statement).all()
     return locations
 
 
-@router.get("/{id}", response_model=schemas.LocationOut)
+@router.get("/{id}", response_model=LocationRead)
 async def get_one_location(
     id: Annotated[int, Path(description="The ID of the location to get")],
-    db: Session = Depends(get_db),
+    session: Session = Depends(get_session),
 ):
     """
     Returns a specific location identified by its id
     """
-    location = db.query(models.Location).filter(models.Location.id == id).first()
+    statement = select(Location).where(Location.id == id)
+    location = session.exec(statement).first()
     if location is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -43,56 +44,61 @@ async def get_one_location(
 @router.post(
     "",
     status_code=status.HTTP_201_CREATED,
-    response_model=schemas.LocationOut,
+    response_model=LocationRead,
 )
-async def create_one_location(location: schemas.LocationCreate, db: Session = Depends(get_db)):
+async def create_one_location(location: LocationCreate, session: Session = Depends(get_session)):
     """
     Create a new location
     """
-    new_location = models.Location(**location.model_dump())
-    db.add(new_location)
-    db.commit()
-    db.refresh(new_location)
+    db_location = Location.model_validate(location)
+    session.add(db_location)
+    session.commit()
+    session.refresh(db_location)
 
-    return new_location
+    return db_location
 
 
 @router.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_one_location(
     id: Annotated[int, Path(description="The ID of the location to delete")],
-    db: Session = Depends(get_db),
+    session: Session = Depends(get_session),
 ):
-    location = db.query(models.Location).filter(models.Location.id == id)
-    first_location = location.first()
+    statement = select(Location).where(Location.id == id)
+    location = session.exec(statement).first()
 
-    if first_location is None:
+    if location is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"Location with id: {id} does not exist",
         )
 
-    location.delete(synchronize_session=False)
-    db.commit()
+    session.delete(location)
+    session.commit()
 
     return
 
 
-@router.put("/{id}", response_model=schemas.LocationOut)
+@router.put("/{id}", response_model=LocationRead)
 async def update_one_location(
     id: Annotated[int, Path(description="The ID of the location to update")],
-    location: schemas.LocationUpdate,
-    db: Session = Depends(get_db),
+    location: LocationUpdate,
+    session: Session = Depends(get_session),
 ):
-    location_query = db.query(models.Location).filter(models.Location.id == id)
-    first_location = location_query.first()
+    statement = select(Location).where(Location.id == id)
+    db_location = session.exec(statement).first()
 
-    if first_location is None:
+    if db_location is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"location with id: {id} does not exist",
         )
 
-    location_query.update(jsonable_encoder(location), synchronize_session=False)
-    db.commit()
+    location_data = location.model_dump(exclude_unset=True)
+    for key, value in location_data.items():
+        setattr(db_location, key, value)
 
-    return location_query.first()
+    session.add(db_location)
+    session.commit()
+    session.refresh(db_location)
+
+    return db_location

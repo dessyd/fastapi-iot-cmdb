@@ -4,8 +4,6 @@ from fastapi.openapi.utils import get_openapi
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 
-from app import database
-
 from .routers import locations, things
 
 # Needed if Alembic is not used to create / upgrade the structure
@@ -20,7 +18,7 @@ origins = [
     "https://localhost:8000",
 ]
 
-database.Base.metadata.create_all(bind=database.engine)
+# database.create_db_and_tables()  # Enable when database is available
 
 
 def custom_openapi():

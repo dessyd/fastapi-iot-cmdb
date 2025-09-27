@@ -1,24 +1,26 @@
-from sqlalchemy import create_engine
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
+from sqlmodel import Session, SQLModel, create_engine
 
 from .config import settings
 
-SQLALCHEMY_DATABASE_URL = f"{settings.database_driver}://{settings.database_username}:{settings.database_password}@{settings.database_hostname}:{settings.database_port}/{settings.database_name}"
+DATABASE_URL = f"{settings.database_driver}://{settings.database_username}:{settings.database_password}@{settings.database_hostname}:{settings.database_port}/{settings.database_name}"
 
-engine = create_engine(SQLALCHEMY_DATABASE_URL)
+engine = create_engine(
+    DATABASE_URL,
+    echo=False,  # Set to True for SQL logging during development
+    pool_pre_ping=True,
+    pool_recycle=300,
+)
 
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
-Base = declarative_base()
+def create_db_and_tables():
+    """Create database tables"""
+    SQLModel.metadata.create_all(engine)
 
 
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
+def get_session():
+    """Dependency for getting database session"""
+    with Session(engine) as session:
+        yield session
 
 
 # Init DB see: https://www.andrewvillazon.com/move-data-to-db-with-sqlalchemy/

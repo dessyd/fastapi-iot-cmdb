@@ -3,10 +3,8 @@ fastapi
 passlib
 pre-commit
 psycopg2-binary
-pydantic
-pydantic_settings
 python-dotenv
 python-jose
 python-multipart
-sqlalchemy
+sqlmodel>=0.0.8
 uvicorn
