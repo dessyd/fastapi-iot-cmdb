@@ -1,66 +1,133 @@
 # FastAPI IoT CMDB
 
-## Details
+A Configuration Management Database (CMDB) for tracking and managing IoT devices and their physical locations.
 
-### Local Setup
+## Features
 
-<https://github.com/dessyd/fastapi-iot-cmdb/blob/7afa3ced8e9d8d89754d945572939c415c53250d/setup.sh#L1-L17>
+- **Location Management**: Track physical locations with GPS coordinates
+- **Device Tracking**: Manage IoT devices with MAC addresses and location associations
+- **RESTful API**: Complete CRUD operations for locations and things
+- **SQLModel Integration**: Unified data models serving both database and API schemas
+- **Comprehensive Testing**: Full test suite with 9 test cases covering all operations
 
-### Run the Environment
+## Quick Start
+
+### Prerequisites
+
+- Python 3.8+
+- PostgreSQL database
+- Virtual environment (recommended)
+
+### Installation
+
+1. **Clone and setup environment**:
+
+   ```bash
+   git clone <repository-url>
+   cd fastapi-iot-cmdb
+   python -m venv .venv
+   source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+   pip install -r requirements.txt
+   ```
+
+2. **Configure environment**:
+
+   Copy `.env.example` to `.env` and configure your database settings:
+
+   ```bash
+   DATABASE_DRIVER=postgresql
+   DATABASE_HOSTNAME=localhost
+   DATABASE_PORT=5432
+   DATABASE_NAME=iot_cmdb
+   DATABASE_USERNAME=your_username
+   DATABASE_PASSWORD=your_password
+   ```
+
+3. **Start the application**:
+
+   ```bash
+   # Database tables are created automatically on startup
+   python -m uvicorn app.main:app --reload
+   ```
+
+4. **Run tests** (optional):
+
+   ```bash
+   python test_api.py
+   ```
+
+### Using Docker Compose
 
 ```bash
-# start database engine
+# Start database engine
 docker compose up -d
-# Initialize alembic file structure
-alembic init alembic
-# copy the project ini file
-cp app/alembic.env.py alembic/env.py
-# Autogenerate the database schema creation file
-alembic revision --autogenerate -m "Application schema"
-# Execute the schema creation
-alembic upgrade head
-# Start Web server:
+
+# Start web server
 uvicorn app.main:app --reload
 ```
 
-## Modules dependencies
+## API Documentation
+
+Once running, access the interactive API documentation at:
+
+- **Swagger UI**: <http://localhost:8000/docs>
+- **ReDoc**: <http://localhost:8000/redoc>
+
+## Architecture
+
+### Current Module Dependencies
 
 ```mermaid
 flowchart LR
+    c(config)
+    d(database)
+    m(models)
+    rl(routers/locations)
+    rt(routers/things)
 
+    d --> c
+    m --> d
 
- c(config)
- d(database)
- m(models)
- o(oauth2)
- ra(routers/auth)
- ru(routers/users)
- s(schemas)
- u(utils)
+    main --> rl
+    main --> rt
 
- d --> c
- m --> d
- o --> c
- o --> d
- o --> m
- o --> s
+    rl --> d
+    rl --> m
 
- main --> ra
- main --> ru
-
- ra --> d
- ra --> m
- ra --> o
- ra --> s
- ra --> u
-
- ru --> m
- ru --> s
- ru --> u
- ru --> d
-
+    rt --> d
+    rt --> m
 ```
 
-## Some Postgres details
+### Key Components
 
-See more on Foreign Keys and constraints [here](https://postgreswithexample.com/sql-tutorials/foreign-key-constraints-in-postgresql).
+- **`app/main.py`**: FastAPI application setup with CORS and lifespan management
+- **`app/models.py`**: SQLModel unified data models (database + API schemas)
+- **`app/database.py`**: Database connection and session management
+- **`app/routers/`**: API endpoint implementations
+
+## Documentation
+
+- **[Architecture Review](ARCHITECTURE_REVIEW.md)**: High-level system design and patterns
+- **[Database Schema](DATABASE_SCHEMA.md)**: Detailed technical implementation
+- **[Test Suite](test_api.py)**: Comprehensive API testing
+
+## Database Schema
+
+The system manages two main entities:
+
+- **Locations**: Physical sites with GPS coordinates
+- **Things**: IoT devices with MAC addresses linked to locations
+
+See [DATABASE_SCHEMA.md](DATABASE_SCHEMA.md) for detailed schema information.
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Run tests: `python test_api.py`
+5. Submit a pull request
+
+## License
+
+This project is licensed under the MIT License.
