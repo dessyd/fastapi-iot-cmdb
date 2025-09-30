@@ -15,7 +15,7 @@ This document outlines a complete rewrite of the FastAPI IoT CMDB using SQLModel
 
 ### Current Structure
 
-```
+```text
 Current (SQLAlchemy + Pydantic):
 - models.py: 2 SQLAlchemy classes (Thing, Location)
 - schemas.py: 8 Pydantic classes (LocationBase, LocationCreate, LocationUpdate, LocationJoin, LocationOut, ThingBase, ThingCreate, ThingUpdate, ThingOut)
@@ -453,7 +453,7 @@ async def create_thing(thing: ThingCreate, session: Session = Depends(get_sessio
 
 ### Before (Current)
 
-```
+```text
 Location ecosystem:
 - models.Location (SQLAlchemy)
 - schemas.LocationBase
@@ -476,7 +476,7 @@ Overall: 11 classes for 2 entities
 
 ### After (SQLModel)
 
-```
+```text
 Location ecosystem:
 - LocationBase (shared fields)
 - Location (table model)
